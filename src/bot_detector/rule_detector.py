@@ -16,7 +16,9 @@ class RuleBasedDetector:
         Args:
             config: Configuration dictionary for thresholds
         """
-        self.config = config or self._get_default_config()
+        self.config = self._get_default_config()
+        if config:
+            self.config.update(config)
     
     def _get_default_config(self) -> Dict[str, Any]:
         """Get default configuration thresholds."""
