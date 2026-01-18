@@ -99,10 +99,11 @@ class RuleBasedDetector:
         max_score += 0.15
         
         # Rule 8: Very fast reply times (likely automated)
-        if features.get('avg_reply_time', 0) < 5:  # Less than 5 seconds
-            if features.get('avg_reply_time', 0) > 0:  # But not zero (which might be missing data)
-                triggered_rules.append("Suspiciously fast reply times")
-                bot_score += 0.2
+        avg_reply_time = features.get('avg_reply_time', 0)
+        if avg_reply_time < 5 and avg_reply_time > 0:
+            # Less than 5 seconds but not zero (which might be missing data)
+            triggered_rules.append("Suspiciously fast reply times")
+            bot_score += 0.2
         max_score += 0.2
         
         # Rule 9: Low interaction diversity (talking to same accounts)

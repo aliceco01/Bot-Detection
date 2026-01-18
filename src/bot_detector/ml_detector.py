@@ -83,7 +83,7 @@ class MLBotDetector:
             confidence = probabilities[1] if is_bot else probabilities[0]
             
             return is_bot, float(confidence)
-        except Exception as e:
+        except (AttributeError, ValueError, IndexError) as e:
             # Fallback to heuristic if prediction fails
             return self._simple_heuristic(features)
     
