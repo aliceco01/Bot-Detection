@@ -3,13 +3,48 @@ Feature extraction module for bot detection.
 Extracts relevant features from user activity data.
 """
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import re
 from datetime import datetime
 
 
 class FeatureExtractor:
     """Extract features from user activity for bot detection."""
+    
+    def _parse_datetime(self, dt_value: Any) -> Optional[datetime]:
+        """
+        Safely parse datetime from various formats.
+        
+        Args:
+            dt_value: Datetime value (string, datetime object, or None)
+            
+        Returns:
+            Parsed datetime or None if parsing fails
+        """
+        if not dt_value:
+            return None
+        
+        if isinstance(dt_value, datetime):
+            return dt_value
+        
+        if isinstance(dt_value, str):
+            # Try various ISO format variations
+            for fmt in ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%dT%H:%M:%S']:
+                try:
+                    return datetime.strptime(dt_value, fmt)
+                except ValueError:
+                    continue
+            
+            # Try isoformat parsing
+            try:
+                # Remove timezone indicator for simpler parsing
+                clean_value = dt_value.replace('Z', '').split('+')[0].split('-')[0:3]
+                clean_value = '-'.join(clean_value)
+                return datetime.fromisoformat(dt_value.replace('Z', '+00:00'))
+            except (ValueError, AttributeError):
+                pass
+        
+        return None
     
     def extract_features(self, user_data: Dict[str, Any]) -> Dict[str, float]:
         """
@@ -72,13 +107,17 @@ class FeatureExtractor:
         if not created_at:
             return 0.0
         
-        if isinstance(created_at, str):
-            try:
-                created_at = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
-            except:
-                return 0.0
+        created_dt = self._parse_datetime(created_at)
+        if not created_dt:
+            return 0.0
         
-        age = (datetime.now(created_at.tzinfo) - created_at).days
+        # Use timezone-aware comparison if possible
+        if created_dt.tzinfo is None:
+            now = datetime.now()
+        else:
+            now = datetime.now(created_dt.tzinfo)
+        
+        age = (now - created_dt).days
         return float(max(0, age))
     
     def _has_numbers(self, text: str) -> bool:
@@ -116,12 +155,9 @@ class FeatureExtractor:
         for post in posts:
             timestamp = post.get('timestamp')
             if timestamp:
-                if isinstance(timestamp, str):
-                    try:
-                        timestamp = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
-                    except:
-                        continue
-                timestamps.append(timestamp)
+                parsed_dt = self._parse_datetime(timestamp)
+                if parsed_dt:
+                    timestamps.append(parsed_dt)
         
         if len(timestamps) < 2:
             return 0.0
