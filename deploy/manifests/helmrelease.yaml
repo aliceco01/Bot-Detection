@@ -1,0 +1,29 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bot-detection
+  namespace: bot-detection
+spec:
+  interval: 10m
+  releaseName: bot-detection
+  targetNamespace: bot-detection
+  chart:
+    spec:
+      chart: ./deploy/chart/bot-detection
+      sourceRef:
+        kind: GitRepository
+        name: bot-detection-source
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/aliceco01/bot-detection
+      tag: main
+      pullPolicy: IfNotPresent
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
