@@ -38,6 +38,8 @@ ENV/
 *.swp
 *.swo
 *~
+.cursor/
+.cursorignore
 
 # Jupyter Notebook
 .ipynb_checkpoints
