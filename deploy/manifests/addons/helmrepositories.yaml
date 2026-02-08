@@ -1,0 +1,36 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: strimzi-charts
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://strimzi.io/charts/
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: keda
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://kedacore.github.io/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: karpenter
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: oci://public.ecr.aws/karpenter/karpenter
+  type: oci
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: milvus
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://zilliztech.github.io/milvus-helm/

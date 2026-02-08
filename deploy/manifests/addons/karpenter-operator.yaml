@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: karpenter
+  namespace: flux-system
+spec:
+  interval: 30m
+  releaseName: karpenter
+  targetNamespace: karpenter
+  chart:
+    spec:
+      chart: karpenter
+      version: 0.37.0
+      sourceRef:
+        kind: HelmRepository
+        name: karpenter
+        namespace: flux-system
+  values:
+    # TODO: Set these to your EKS cluster details and provision IAM roles before applying.
+    settings:
+      clusterName: bot-detection
+      clusterEndpoint: ""
+      interruptionQueue: ""
