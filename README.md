@@ -328,15 +328,3 @@ Use your own labeled dataset to train specialized models:
 2. Extract features using `FeatureExtractor`
 3. Train model using `MLBotDetector.train()`
 4. Save and load for production use
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues.
-
-## License
-
-This project is open source and available for use in bot detection applications.
-
-## Disclaimer
-
-This bot detection system is designed to assist in identifying automated accounts but may not catch all bots or may occasionally flag legitimate users. Always review flagged accounts manually and use the system as one component of a comprehensive security strategy.
