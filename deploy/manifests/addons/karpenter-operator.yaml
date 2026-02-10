@@ -4,6 +4,7 @@ metadata:
   name: karpenter
   namespace: flux-system
 spec:
+  suspend: true
   interval: 30m
   releaseName: karpenter
   targetNamespace: karpenter
@@ -16,7 +17,7 @@ spec:
         name: karpenter
         namespace: flux-system
   values:
-    # TODO: Set these to your EKS cluster details and provision IAM roles before applying.
+    # TODO: Set these to your EKS cluster details and provision IAM roles before applying, then set suspend: false.
     settings:
       clusterName: bot-detection
       clusterEndpoint: ""
